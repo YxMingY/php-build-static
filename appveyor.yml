@@ -1,0 +1,30 @@
+image: ubuntu
+version: php-7.2-appveyor-{build}
+shallow_clone: true
+install:
+- sh: sudo apt-get update > /dev/null
+- sh: sudo apt-get install make autoconf automake libtool libtool-bin m4 wget gzip bzip2 bison zip g++ -y > /dev/null
+
+- sh: wget "https://github.com/ScerIO/php-build/releases/download/1.0/aarch64-linux-musl.tar.gz"
+- sh: sudo tar -xzf aarch64-linux-musl.tar.gz -C /usr/local/
+- sh: rm aarch64-linux-musl.tar.gz
+
+- sh: wget "https://github.com/ScerIO/php-build/releases/download/1.0/arm-linux-musleabi.tar.gz"
+- sh: sudo tar -xzf arm-linux-musleabi.tar.gz -C /usr/local/
+- sh: rm arm-linux-musleabi.tar.gz
+
+- sh: sudo chmod +x compile.sh
+build_script:
+- sh: sudo su -c "./compile.sh -t android-aarch64 -x -s -j4 -f"
+- sh: cd bin/php7/bin; zip -r ../../../php-aarch64.zip php php.ini  > /dev/null;cd ../../..
+- sh: sudo rm -rf bin
+
+- sh: sudo su -c "./compile.sh -t android-armv7 -x -s -j4 -f"
+- sh: cd bin/php7/bin; zip -r ../../../php-armv7.zip php php.ini  > /dev/null;cd ../../..
+- sh: sudo rm -rf bin
+
+- sh: sudo su -c "./compile.sh -t linux64 -l -j4 -c -f x86_64"
+- sh: cd bin/php7/bin; zip -r ../../../php-linux-x86_64.zip php php.ini  > /dev/null;cd ../../..
+- sh: sudo rm -rf bin
+artifacts:
+- path: '*php-*.zip'
