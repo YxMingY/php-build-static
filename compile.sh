@@ -1,5 +1,5 @@
 #!/bin/bash
-[ -z "$PHP_VERSION" ] && PHP_VERSION="7.3.0"
+[ -z "$PHP_VERSION" ] && PHP_VERSION="7.2.4"
 
 PHP_IS_BETA="no"
 
@@ -710,7 +710,11 @@ function get_extension_tar_gz {
 # 4: github repo name
 # 5: version prefix (optional)
 function get_github_extension {
-	get_extension_tar_gz "$1" "$2" "https://github.com/$3/$4/archive/$5$2.tar.gz" "$4-$2"
+  if [ "$1" == "ds" ];then
+    get_extension_tar_gz "$1" "$2" "https://github.com/$3/$4/archive/$5$2.tar.gz" "ext-ds-$2"
+  else
+   	get_extension_tar_gz "$1" "$2" "https://github.com/$3/$4/archive/$5$2.tar.gz" "$4-$2"
+  fi
 }
 
 # 1: extension name
@@ -877,7 +881,7 @@ $HAS_SCERIO_CHUNKUTILS \
 --enable-shared=no \
 --enable-static=yes \
 --enable-shmop \
---enable-maintainer-zts \zd
+--enable-maintainer-zts \
 --disable-short-tags \
 $HAVE_PCNTL \
 $HAVE_MYSQLI \
